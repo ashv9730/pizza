@@ -65,6 +65,9 @@ section.login {
             color: $primary-hover;
         }
     }
+    button{
+        background-color: $primary;
+    }
 }
 .noty_theme__mint {
     border-radius: 50px!important;
@@ -225,4 +228,12 @@ section.status {
 
   .StripeElement--webkit-autofill {
     background-color: #fefde5 !important;
+  }
+
+  .formHeading{
+    color: $primary;
+  }
+
+  .loginAndRegister{
+    background-color: $primary;
   }
