@@ -10,11 +10,14 @@ import Menu from "./app/models/menu";
 import session from "express-session";
 import flash from "express-flash";
 import MongoStore from "connect-mongo";
+import passport from 'passport'
+import passportInit from "./app/config/passport";
 
 const app = express();
 
 // static file
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
 
 app.use(express.json());
 
@@ -36,6 +39,8 @@ db.once("open", function () {
   console.log("DB Connected successfully");
 });
 
+
+
 //express-session
 app.use(
   session({
@@ -52,9 +57,15 @@ app.use(
 app.use(flash());
 // global middleares
 
+// passport config
+passportInit(passport)
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use((req, res, next) => {
   res.locals.session = req.session;
-  next()
+  res.locals.user = req.user;
+  next();
 });
 
 //set template
