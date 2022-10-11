@@ -3,6 +3,11 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 
 export default function authController() {
+
+  const _getRedirectUrl = (req) => {
+    return req.user.role === 'admin'? '/admin/orders' : '/'
+  }
+
   return {
     // actual is like this refrence javascript object
     // index : (req,res) => {
@@ -53,6 +58,7 @@ export default function authController() {
         // Validate request
         if (!email || !password) {
           req.flash("error", "All fields are required");
+          req.flash('email' , email)
           return res.redirect("/login");
         }
         passport.authenticate("local", (err, user, info) => {
@@ -69,8 +75,8 @@ export default function authController() {
               req.flash("error", info.messages);
               return next(err);
             }
-            return res.redirect("/");
-            // return res.redirect(_getRedirectUrl(req))
+            // return res.redirect("/");
+            return res.redirect(_getRedirectUrl(req))
           });
         })(req, res, next);
       } catch (error) {
