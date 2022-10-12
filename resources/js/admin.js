@@ -1,6 +1,7 @@
 import axios from "axios";
 import moment from "moment";
-export default function initAdmin() {
+import Noty from "noty";
+export default function initAdmin(socket) {
   const orderTableBody = document.getElementById("orderTableBody");
   let orders = [];
   let markup;
@@ -12,14 +13,14 @@ export default function initAdmin() {
       },
     })
     .then((res) => {
-        console.log(res.data);
+      console.log(res.data);
       orders = res.data;
       markup = generateMarkup(orders);
       orderTableBody.innerHTML = markup;
     });
 
   function renderItems(items) {
-    console.log('renderItem')
+    console.log("renderItem");
     let parsedItems = Object.values(items);
     return parsedItems
       .map((menuItem) => {
@@ -93,11 +94,22 @@ export default function initAdmin() {
                     ${order.paymentStatus ? "paid" : "Not paid"}
                 </td>
                 <td class="border px-4 py-2">
-                    ${order.paymentType  }
+                    ${order.paymentType}
                 </td>
             </tr>
         `;
       })
       .join("");
   }
+  socket.on("orderPlaced", (order) => {
+    new Noty({
+      type: "success",
+      timeout: 1000,
+      text: "New Order",
+      progressBar: false,
+    }).show();
+    orders.unshift(order);
+    orderTableBody.innerHTML = "";
+    orderTableBody.innerHTML = generateMarkup(orders);
+  });
 }

@@ -47,7 +47,7 @@ export default function authController() {
         });
         const userSave = await user.save();
 
-        res.redirect("/");
+        res.redirect("/login");
       } catch (error) {
         res.send({ error: error.message });
       }

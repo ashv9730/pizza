@@ -12,9 +12,13 @@ import flash from "express-flash";
 import MongoStore from "connect-mongo";
 import passport from 'passport'
 import passportInit from "./app/config/passport";
+import http from 'http';
+import { Server } from "socket.io";
+import EventEmitter from "events";
 
 const app = express();
-
+const server = http.createServer(app)
+const io = new Server(server);
 // static file
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
@@ -39,7 +43,8 @@ db.once("open", function () {
   console.log("DB Connected successfully");
 });
 
-
+const eventEmitter = new EventEmitter()
+app.set('eventEmitter', eventEmitter)
 
 //express-session
 app.use(
@@ -77,8 +82,25 @@ app.use(expressejsLayouts);
 // web Routes
 initRoutes(app);
 
+io.on('connection', (socket) => {
+  console.log('socket id',socket.id);
+  socket.on('join', (orderId) => {
+    // console.log(orderId)
+    socket.join(orderId)
+  });
+});
+
+
+eventEmitter.on('orderUpdated', (data)=>{
+  io.to(`order_${data.id}`).emit('orderUpdated',data)
+})
+
+eventEmitter.on('orderPlaced', (data)=>{
+  io.to(`adminRoom`).emit('orderPlaced',data)
+})
+
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`server listenning on port ${PORT}`);
 });

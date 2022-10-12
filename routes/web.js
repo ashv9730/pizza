@@ -1,4 +1,5 @@
 import adminOrderController from "../app/http/controllers/admin/adminOrderController";
+import statusController from "../app/http/controllers/admin/statusController";
 import authController from "../app/http/controllers/authController";
 import cartController from "../app/http/controllers/customers/cartController";
 import homeController from "../app/http/controllers/homeController";
@@ -17,7 +18,12 @@ export default function initRoutes(app) {
   app.get("/register", guest, authController().register);
   app.post("/register", authController().postRegister);
   app.post("/orders", auth, orderController().store);
+  // customer
   app.get("/customer/orders", auth, orderController().index);
+  app.get("/customer/orders/:_id", auth, orderController().show);
+  
   // admin
   app.get("/admin/orders", admin, adminOrderController().index);
+  app.post("/admin/order/status", admin, statusController().index);
+  
 }
