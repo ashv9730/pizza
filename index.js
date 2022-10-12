@@ -30,7 +30,7 @@ const dbUser = process.env.dbUser;
 const dbPassword = process.env.dbPassword;
 
 const url = `mongodb+srv://${dbUser}:${dbPassword}@cluster0.es5vaf2.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-console.log(url);
+// console.log(url);
 // Database
 mongoose.connect(url, {
   useNewUrlParser: true,
@@ -81,6 +81,9 @@ app.use(expressejsLayouts);
 
 // web Routes
 initRoutes(app);
+app.use((req,res)=>{
+  res.status(404).send('<h1>404,Page Not Found</h1>')
+})
 
 io.on('connection', (socket) => {
   console.log('socket id',socket.id);
