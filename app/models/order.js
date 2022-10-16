@@ -28,8 +28,8 @@ const orderSchema = new mongoose.Schema(
       default: "order_placed",
     },
     paymentStatus: {
-      type: String,
-      default: "paid",
+      type: Boolean,
+      default: false,
     },
   },
   {

@@ -10,6 +10,7 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js   --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^1.41.0",
     "axios": "^1.1.2",
     "bcrypt": "^5.1.0",
     "connect-mongo": "^4.6.0",
@@ -26,7 +27,8 @@
     "noty": "^3.2.0-beta-deprecated",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.5.2"
+    "socket.io": "^4.5.2",
+    "stripe": "^10.14.0"
   },
   "devDependencies": {
     "laravel-mix": "^6.0.49",

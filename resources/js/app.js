@@ -2,6 +2,7 @@ import axios from "axios";
 import Noty from "noty";
 import initAdmin from "./admin";
 import moment from "moment";
+import initStripe from "./stripe";
 let addToCart = document.querySelectorAll(".add-to-cart");
 let cartCounter = document.querySelector("#cartCounter");
 function updateCart(pizza) {
@@ -43,7 +44,6 @@ if (alertMsg) {
   }, 5000);
 }
 
-
 // single order page
 let statues = document.querySelectorAll(".status_line");
 let hiddenInput = document.querySelector("#hiddenInput");
@@ -53,11 +53,10 @@ order = JSON.parse(order);
 let time = document.createElement("small");
 
 function updateStatus(order) {
-
   statues.forEach((status) => {
-    status.classList.remove('step-completed')
-    status.classList.remove('current')
-})
+    status.classList.remove("step-completed");
+    status.classList.remove("current");
+  });
   let stepCompleted = true;
   statues.forEach((status) => {
     if (stepCompleted) {
@@ -77,6 +76,14 @@ function updateStatus(order) {
 
 updateStatus(order);
 
+
+
+// payment form
+initStripe()
+
+
+
+
 // socket
 
 let socket = io();
@@ -84,27 +91,26 @@ let socket = io();
 if (order) {
   socket.emit("join", `order_${order._id}`);
 }
-initAdmin(socket)
+initAdmin(socket);
 // admin
-let adminAreaPath = window.location.pathname
-if(adminAreaPath.includes('admin')) {
-    
-    socket.emit('join', 'adminRoom')
+let adminAreaPath = window.location.pathname;
+if (adminAreaPath.includes("admin")) {
+  socket.emit("join", "adminRoom");
 }
 
-socket.on('orderUpdated', (data) => {
-  console.log(data)
-  const updatedOrder = { ...order }
-  updatedOrder.updatedAt = moment().format()
-  updatedOrder.status = data.status
-  updateStatus(updatedOrder)
+socket.on("orderUpdated", (data) => {
+  console.log(data);
+  const updatedOrder = { ...order };
+  updatedOrder.updatedAt = moment().format();
+  updatedOrder.status = data.status;
+  updateStatus(updatedOrder);
   new Noty({
-      type: 'success',
-      timeout: 1000,
-      text: data.status,
-      progressBar: false,
+    type: "success",
+    timeout: 1000,
+    text: data.status,
+    progressBar: false,
   }).show();
-})
+});
 
 socket.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
